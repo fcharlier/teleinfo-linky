@@ -17,6 +17,7 @@ import termios
 import threading
 import time
 from datetime import datetime
+import os
 
 import serial
 import yaml
@@ -214,7 +215,8 @@ if __name__ == '__main__':
 
     # Lecture du fichier de configuration
     try:
-        with open("config.yml", "r") as f:
+        config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.yml")
+        with open(config_path, "r") as f:
             cfg = yaml.load(f, Loader=yaml.SafeLoader)
     except FileNotFoundError:
         logging.error('Il manque le fichier de configuration config.yml')
