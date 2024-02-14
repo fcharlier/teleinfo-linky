@@ -169,7 +169,7 @@ def linky():
                     # Si caractère de fin de trame dans la ligne, on écrit les données dans InfluxDB
                     if STOP_FRAME in line:
                         num_keys = len(frame)
-                        logging.info(f'Trame reçue ({num_keys} étiquettes traités)')
+                        logging.info(f'Trame reçue ({num_keys} étiquettes traités): {frame}')
 
                         # Horodatage de la trame reçue
                         frame['TIME'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -206,7 +206,7 @@ def linky():
 if __name__ == '__main__':
 
     # Creation du logger
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
     logging.info('Démarrage Linky Téléinfo')
 
     # Capture élégamment une interruption par CTRL+C
