@@ -55,7 +55,7 @@ def _send_frames_to_influx():
             record.append(point)
 
         # Envoie vers InfluxDB et ré-essaie en boucle tant que cela ne fonctionne pas
-        logging.info(f'Ecriture dans InfluxDB')
+        logging.debug(f'Ecriture dans InfluxDB')
         written = False
         x = 0
         while not written:
@@ -115,6 +115,7 @@ def linky():
             line = ser.readline()
             while START_FRAME not in line:  # Recherche du caractère de début de trame, c'est-à-dire STX 0x02
                 line = ser.readline()
+            logging.info('Première trame reçue !')
 
             # Initialisation d'une trame vide
             frame = dict()
@@ -164,13 +165,13 @@ def linky():
                             # Ajout de la valeur
                             frame[key] = int(val)
                         else:
-                            logging.debug(
+                            logging.error(
                                 f'Somme de contrôle erronée pour {key}')
 
                     # Si caractère de fin de trame dans la ligne, on écrit les données dans InfluxDB
                     if STOP_FRAME in line:
                         num_keys = len(frame)
-                        logging.info(f'Trame reçue ({num_keys} étiquettes traités): {frame}')
+                        logging.debug(f'Trame reçue ({num_keys} étiquettes traités): {frame}')
 
                         # Horodatage de la trame reçue
                         frame['TIME'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -184,7 +185,7 @@ def linky():
 
                 except Exception as e:
                     logging.error(f'Une exception s\'est produite : {e}', exc_info=True)
-                    logging.error(f'Etiquette : {key}  Donnée : {val}')
+                    # logging.error(f'Etiquette : {key}  Donnée : {val}')
 
     except termios.error:
         logging.error('Erreur lors de la configuration du port série')
